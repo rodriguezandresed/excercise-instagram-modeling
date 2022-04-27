@@ -12,96 +12,82 @@ class User(Base):
     __tablename__ = 'user'
     # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    userId = Column(Integer, primary_key=True)
-    username = Column(String(250), nullable=False, unique = True)
+    id = Column(Integer, primary_key=True)
+    name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
     password = Column(String(250), nullable=False)
     loginStatus = Column(Boolean, nullable=False)
     registrationDate = Column(Date, nullable=False)
-   
 
-class Favorite(Base):
-    __tablename__ = 'favorite'
-    # Here we define columns for the table address.
+class Post(Base):
+    __tablename__ = 'post'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    user_id=Column(Integer, ForeignKey('user.id'))
-    favoriteName = Column(String(250))
-    favoriteNature = Column(String(250))
-    favoriteStatus = Column(Boolean)
+    postId = Column(Integer, primary_key=True)
+    userId = Column(Integer,ForeignKey('user.id'))
+    caption = Column(String(250), nullable=False)
+    image = Column(String(250), nullable=False)
+    edit_post = Column(Boolean, nullable=False)
+    eliminate_post = Column(Boolean, nullable=False)
     user=relationship(User, back_populates="user")
 
-class Nature(Base):
-    __tablename__ = 'nature'
-    # Here we define columns for the table address.
+class Liked(Base):
+    __tablename__ = 'liked'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    natureName = Column(String(250))
+    likeId = Column(Integer, primary_key=True)
+    postId = Column(Integer, ForeignKey('post.postId') )
+    eliminate_like = Column(Boolean, nullable=False)
+    post = relationship(Post, back_populates="post")
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table address.
+class Comment(Base):
+    __tablename__ = 'comment'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    personName = Column(String(250))
-    personNature= Column(String(250), ForeignKey("nature.natureName"))
-    person = relationship(Nature,  back_populates="nature")
+    commentId = Column(Integer, primary_key=True)
+    comment = Column(String(250), nullable=False)
+    eliminate_like = Column(Boolean, nullable=False)
+    userId = Column(Integer, ForeignKey('user.id') )
+    postId = Column(Integer, ForeignKey('post.postId'))
+    post = relationship(Post, back_populates="post")
+    user = relationship(User, back_populates="user")
+
+class Saved(Base):
+    __tablename__ = 'saved'
+    # Here we define columns for the table person
+    # Notice that each column is also a normal Python instance attribute.
+    savedId = Column(Integer, primary_key=True)
+    eliminate_save = Column(Boolean, nullable=False)
+    userId = Column(Integer, ForeignKey('user.id') )
+    postId = Column(Integer, ForeignKey('post.postId'))
+    post = relationship(Post, back_populates="post")
+    user = relationship(User, back_populates="user")
+
+    
     
 
-
-class PersonDetail(Base):
-    __tablename__ = 'person_detail'
-    # Here we define columns for the table address.
+class Follower(Base):
+    __tablename__ = 'follower'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    personName = Column(String(250))
-    detailNature = Column(String(250), ForeignKey("person.personNature") )
-    hairColor = Column(String(250))
-    favorited = Column(Boolean, ForeignKey("favorite.favoriteStatus") )
-    personDetail = relationship(Person,  back_populates="person")
-    favoriteStatus = relationship(Favorite, back_populates="favorite")
+    followerId= Column(Integer, primary_key=True)
+    eliminate_follower = Column(Boolean, nullable=False)
+    userId = Column(Integer, ForeignKey('user.id') )
+    user = relationship(User, back_populates="user")
 
 
-class Planet(Base):
-    __tablename__ = 'planet'
-    # Here we define columns for the table address.
+class Followed(Base):
+    __tablename__ = 'followed'
+    # Here we define columns for the table person
     # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    planetName = Column(String(250))
-    planetNature= Column(String(250), ForeignKey("nature.natureName"))
-    planet = relationship(Nature,  back_populates="nature")
+    followerId= Column(Integer, primary_key=True)
+    eliminate_followed = Column(Boolean, nullable=False)
+    userId = Column(Integer, ForeignKey('user.id') )
+    user = relationship(User, back_populates="user")
 
-class PlanetDetail(Base):
-    __tablename__ = 'planet_detail'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    planetName = Column(String(250))
-    detailNature = Column(String(250), ForeignKey("planet.planetNature") )
-    population = Column(Integer)
-    favorited = Column(Boolean, ForeignKey("favorite.favoriteStatus") )
-    planetDetail = relationship(Planet,  back_populates="planet")
-    favoriteStatus = relationship(Favorite, back_populates="favorite")
 
-class Vehicle(Base):
-    __tablename__ = 'vehicle'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    vehicleName = Column(String(250))
-    vehicleNature= Column(String(250), ForeignKey("nature.natureName"))
-    vehicle = relationship(Nature,  back_populates="nature")
+    
 
-class VehicleDetail(Base):
-    __tablename__ = 'vehicle_detail'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
-    uid = Column(Integer, primary_key=True)
-    vehicleName = Column(String(250))
-    vehicleNature = Column(String(250), ForeignKey("vehicle.vehicleNature") )
-    manufacturer = Column(String(250))
-    favorited = Column(Boolean, ForeignKey("favorite.favoriteStatus") )
-    vehicleDetail = relationship(Vehicle,  back_populates="vehicle")
-    favoriteStatus = relationship(Favorite, back_populates="favorite")
 
 
     def to_dict(self):
